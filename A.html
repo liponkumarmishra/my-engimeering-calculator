@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate 5x5 Matrix & Sci Calc</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: #0f172a; color: white; display: flex; justify-content: center; padding: 10px; }
+        .container { width: 100%; max-width: 450px; background: #1e293b; border-radius: 20px; padding: 15px; border: 1px solid #334155; }
+        
+        /* Screen */
+        .screen-box { background: #020617; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #3b82f6; text-align: right; }
+        #display { font-size: 1.8rem; color: #10b981; min-height: 40px; word-wrap: break-word; }
+
+        /* Tabs */
+        .nav { display: flex; gap: 5px; margin-bottom: 15px; background: #334155; padding: 5px; border-radius: 12px; overflow-x: auto; }
+        .nav button { flex: 1; padding: 10px; border: none; background: transparent; color: #94a3b8; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; white-space: nowrap; }
+        .nav button.active { background: #3b82f6; color: white; }
+
+        .section { display: none; }
+        .section.active { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        
+        .btn { padding: 18px 5px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; background: #334155; color: white; }
+        .btn:active { transform: scale(0.95); }
+        .op { background: #3b82f6; }
+        .clr { background: #ef4444; }
+        .eq { background: #10b981; grid-column: span 2; }
+        .sci { background: #6366f1; font-size: 0.85rem; }
+
+        /* Matrix Input */
+        textarea { width: 100%; padding: 12px; margin-top: 10px; background: #020617; border: 1px solid #334155; color: #10b981; border-radius: 8px; font-size: 1rem; font-family: monospace; }
+        .res-display { margin-top: 10px; padding: 12px; background: #0f172a; border-radius: 8px; color: #2ecc71; text-align: center; border: 1px dashed #334155; font-weight: bold; }
+        .hint { font-size: 0.7rem; color: #888; margin-top: 5px; line-height: 1.2; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav">
+        <button id="t-basic" class="active" onclick="tab('basic')">BASIC</button>
+        <button id="t-sci" onclick="tab('sci')">SCIENTIFIC</button>
+        <button id="t-mat" onclick="tab('mat')">MATRIX (5x5)</button>
+        <button id="t-sol" onclick="tab('sol')">SOLVER</button>
+    </div>
+
+    <div class="screen-box">
+        <div id="display">0</div>
+    </div>
+
+    <div id="basic" class="section active">
+        <div class="grid">
+            <button class="btn clr" onclick="cls()">AC</button>
+            <button class="btn" onclick="del()">⌫</button>
+            <button class="btn op" onclick="add('(')">(</button>
+            <button class="btn op" onclick="add(')')">)</button>
+            <button class="btn" onclick="add('7')">7</button>
+            <button class="btn" onclick="add('8')">8</button>
+            <button class="btn" onclick="add('9')">9</button>
+            <button class="btn op" onclick="add('/')">÷</button>
+            <button class="btn" onclick="add('4')">4</button>
+            <button class="btn" onclick="add('5')">5</button>
+            <button class="btn" onclick="add('6')">6</button>
+            <button class="btn op" onclick="add('*')">×</button>
+            <button class="btn" onclick="add('1')">1</button>
+            <button class="btn" onclick="add('2')">2</button>
+            <button class="btn" onclick="add('3')">3</button>
+            <button class="btn op" onclick="add('-')">-</button>
+            <button class="btn" onclick="add('0')">0</button>
+            <button class="btn" onclick="add('.')">.</button>
+            <button class="btn eq" onclick="calculate()">=</button>
+            <button class="btn op" style="grid-column: span 2;" onclick="add('+')">+</button>
+        </div>
+    </div>
+
+    <div id="sci" class="section">
+        <div class="grid">
+            <button class="btn sci" onclick="add('sin(')">sin</button>
+            <button class="btn sci" onclick="add('cos(')">cos</button>
+            <button class="btn sci" onclick="add('tan(')">tan</button>
+            <button class="btn sci" onclick="add('sqrt(')">√</button>
+            <button class="btn sci" onclick="add('log(')">log</button>
+            <button class="btn sci" onclick="add('ln(')">ln</button>
+            <button class="btn sci" onclick="add('**')">x^y</button>
+            <button class="btn sci" onclick="add('Math.PI')">π</button>
+            <button class="btn sci" onclick="add('Math.E')">e</button>
+            <button class="btn clr" style="grid-column: span 2;" onclick="cls()">Clear</button>
+        </div>
+    </div>
+
+    <div id="mat" class="section">
+        <p class="hint">Format: Space se numbers alag karein aur ";" se row.<br>3x3 Example: 1 0 2; 0 1 0; 2 0 1</p>
+        <textarea id="mIn" rows="5" placeholder="Enter Matrix here (Up to 5x5)"></textarea>
+        <button class="btn op" style="width:100%; margin-top:10px;" onclick="getDet()">Calculate Determinant</button>
+        <div id="mRes" class="res-display">Determinant Result</div>
+    </div>
+
+    <div id="sol" class="section">
+        <input type="number" id="sa" placeholder="a (x²)">
+        <input type="number" id="sb" placeholder="b (x)">
+        <input type="number" id="sc" placeholder="c">
+        <button class="btn eq" style="width:100%; margin-top:10px;" onclick="solve()">Solve x</button>
+        <div id="sRes" class="res-display">Roots</div>
+    </div>
+</div>
+
+<script>
+    const disp = document.getElementById('display');
+
+    function tab(n) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(n).classList.add('active');
+        document.getElementById('t-'+n).classList.add('active');
+    }
+
+    function add(v) { if(disp.innerText==='0') disp.innerText=''; disp.innerText+=v; }
+    function cls() { disp.innerText='0'; }
+    function del() { disp.innerText = disp.innerText.slice(0,-1) || '0'; }
+
+    function calculate() {
+        try {
+            let s = disp.innerText.replace(/sin\(/g, 'Math.sin(Math.PI/180*')
+                                  .replace(/cos\(/g, 'Math.cos(Math.PI/180*')
+                                  .replace(/tan\(/g, 'Math.tan(Math.PI/180*')
+                                  .replace(/log\(/g, 'Math.log10(')
+                                  .replace(/ln\(/g, 'Math.log(')
+                                  .replace(/sqrt\(/g, 'Math.sqrt(');
+            disp.innerText = eval(s).toFixed(4);
+        } catch { disp.innerText = "Error"; }
+    }
+
+    // --- ADVANCED MATRIX LOGIC (Recursion for any size) ---
+    function determinant(m) {
+        if (m.length === 1) return m[0][0];
+        if (m.length === 2) return (m[0][0]*m[1][1]) - (m[0][1]*m[1][0]);
+        let det = 0;
+        for (let j = 0; j < m[0].length; j++) {
+            let sub = m.slice(1).map(row => row.filter((_, i) => i !== j));
+            det += Math.pow(-1, j) * m[0][j] * determinant(sub);
+        }
+        return det;
+    }
+
+    function getDet() {
+        try {
+            let val = document.getElementById('mIn').value.trim();
+            let matrix = val.split(';').map(r => r.trim().split(/\s+/).map(Number));
+            
+            // Validation: Square matrix check
+            let rows = matrix.length;
+            let cols = matrix[0].length;
+            if(rows !== cols) {
+                document.getElementById('mRes').innerText = "Must be Square (e.g. 3x3)";
+                return;
+            }
+
+            let result = determinant(matrix);
+            document.getElementById('mRes').innerText = "Determinant ("+rows+"x"+cols+") = " + result;
+        } catch { document.getElementById('mRes').innerText = "Input Error!"; }
+    }
+
+    function solve() {
+        let a = parseFloat(document.getElementById('sa').value);
+        let b = parseFloat(document.getElementById('sb').value);
+        let c = parseFloat(document.getElementById('sc').value || 0);
+        let d = b*b - 4*a*c;
+        if(d < 0) document.getElementById('sRes').innerText = "Complex Roots";
+        else {
+            let x1 = (-b + Math.sqrt(d))/(2*a);
+            let x2 = (-b - Math.sqrt(d))/(2*a);
+            document.getElementById('sRes').innerText = "x1=" + x1.toFixed(2) + " | x2=" + x2.toFixed(2);
+        }
+    }
+</script>
+</body>
+</html>
